@@ -3,5 +3,8 @@ defmodule MsgPack do
   def pack(data), do: MessagePacker.pack(data)
 
   @spec unpack(binary) :: any
-  def unpack(data), do: MessageUnpacker.unpack(data)
+  def unpack(bin), do: MessageUnpacker.unpack(bin) |> validate_unpacked
+
+  defp validate_unpacked({data, ""}), do: data
+  defp validate_unpacked(_), do: raise(ArgumentError, message: "incomplete binary")
 end

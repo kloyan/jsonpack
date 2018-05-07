@@ -49,8 +49,6 @@ defmodule MessagePackerTest do
 
   test "correctly packs maps" do
     assert MessagePacker.pack(%{}) == <<128>>
-    assert MessagePacker.pack(generate_map(["a", 1, "b", 2])) == <<130, 161, 97, 1, 161, 98, 2>>
+    assert MessagePacker.pack(%{"a" => 1, "b" => 2}) == <<130, 161, 97, 1, 161, 98, 2>>
   end
-
-  defp generate_map(lst), do: lst |> Enum.chunk(2) |> Map.new(fn [k, v] -> {k, v} end)
 end
