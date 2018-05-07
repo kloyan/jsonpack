@@ -1,8 +1,4 @@
-defmodule JsonpackTest do
+defmodule JsonPackTest do
   use ExUnit.Case
-  doctest Jsonpack
-
-  test "greets the world" do
-    assert Jsonpack.hello() == :world
-  end
+  doctest JsonPack
 end
