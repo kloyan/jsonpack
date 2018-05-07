@@ -17,7 +17,7 @@ defmodule MessagePacker do
   def pack(x) when is_atom(x), do: pack(Atom.to_string(x))
 
   # sint
-  def pack(x) when x < 0, do: raise ArgumentError, message: "negative integers are not allowed"
+  def pack(x) when x < 0, do: raise(ArgumentError, message: "negative integers are not allowed")
 
   # uint
   def pack(x) when is_integer(x), do: pack_uint(x)
@@ -45,7 +45,7 @@ defmodule MessagePacker do
   defp pack_uint(x) when x < @bit_16, do: <<0xCD, x::16>>
   defp pack_uint(x) when x < @bit_32, do: <<0xCE, x::32>>
   defp pack_uint(x) when x < @bit_64, do: <<0xCF, x::64>>
-  defp pack_uint(x), do: raise ArgumentError, message: "integer too large: #{x}"
+  defp pack_uint(x), do: raise(ArgumentError, message: "integer too large: #{x}")
 
   # binary helper functions
   defp pack_str(x) when byte_size(x) < @bit_5, do: <<0b101::3, byte_size(x)::5, x::binary>>
@@ -59,7 +59,8 @@ defmodule MessagePacker do
   defp pack_bin(x) when byte_size(x) < @bit_32, do: <<0xC6, byte_size(x)::32, x::binary>>
   defp pack_bin(x), do: pack_large_binary(x)
 
-  defp pack_large_binary(x), do: raise ArgumentError, message: "binary too large, size is #{byte_size(x)}"
+  defp pack_large_binary(x),
+    do: raise(ArgumentError, message: "binary too large, size is #{byte_size(x)}")
 
   # list helper functions
   defp pack_list(x) when length(x) < @bit_4,
@@ -71,7 +72,7 @@ defmodule MessagePacker do
   defp pack_list(x) when length(x) < @bit_32,
     do: <<0xDD, length(x)::32, pack_list(x, <<>>)::binary>>
 
-  defp pack_list(x), do: raise ArgumentError, message: "list too large, size is #{length(x)}"
+  defp pack_list(x), do: raise(ArgumentError, message: "list too large, size is #{length(x)}")
 
   defp pack_list([], acc), do: acc
   defp pack_list([head | tail], acc), do: pack_list(tail, <<acc::binary, pack(head)::binary>>)
@@ -89,7 +90,7 @@ defmodule MessagePacker do
     <<0xDF, map_size(x)::32, pack_map(Map.to_list(x), <<>>)::binary>>
   end
 
-  defp pack_map(x), do: raise ArgumentError, message: "map too large, size is #{map_size(x)}"
+  defp pack_map(x), do: raise(ArgumentError, message: "map too large, size is #{map_size(x)}")
 
   defp pack_map([], acc), do: acc
 
