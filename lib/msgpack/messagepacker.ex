@@ -22,9 +22,6 @@ defmodule MessagePacker do
   # uint
   def pack(x) when is_integer(x), do: pack_uint(x)
 
-  # float
-  def pack(x) when is_float(x), do: <<0xCA, x::float>>
-
   # string or binary
   def pack(x) when is_binary(x) do
     case String.valid?(x) do

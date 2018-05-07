@@ -14,9 +14,6 @@ defmodule MessageUnpacker do
   def unpack(<<0xCE, x::32, rest::binary>>), do: {x, rest}
   def unpack(<<0xCF, x::64, rest::binary>>), do: {x, rest}
 
-  # float
-  def unpack(<<0xCA, x::float, rest::binary>>), do: {x, rest}
-
   # string
   def unpack(<<0b101::3, sz::5, x::binary-size(sz), rest::binary>>), do: {x, rest}
   def unpack(<<0xD9, sz::8, x::binary-size(sz), rest::binary>>), do: {x, rest}
