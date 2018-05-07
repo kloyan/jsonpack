@@ -1,23 +1,28 @@
-defmodule MsgPack do
+defmodule MessagePacker do
   @bit_4 16
   @bit_5 32
   @bit_7 128
   @bit_8 256
-  @bit_16 65536
+  @bit_16 65_536
   @bit_32 4_294_967_296
   @bit_64 18_446_744_073_709_551_616
 
-  defmacro is_valid_string(str) do
-    quote do: String.valid?(unquote(str))
-  end
+  @spec pack(any) :: binary
+  def pack(x)
 
+  # atoms
   def pack(nil), do: <<0xC0>>
   def pack(false), do: <<0xC2>>
   def pack(true), do: <<0xC3>>
   def pack(x) when is_atom(x), do: pack(Atom.to_string(x))
+
+  # uint
   def pack(x) when is_integer(x), do: pack_uint(x)
+
+  # float
   def pack(x) when is_float(x), do: <<0xCA, x::float>>
 
+  # string or binary
   def pack(x) when is_binary(x) do
     case String.valid?(x) do
       true -> pack_str(x)
@@ -25,8 +30,13 @@ defmodule MsgPack do
     end
   end
 
+  # list
   def pack(x) when is_list(x), do: pack_list(x)
+
+  # map
   def pack(x) when is_map(x), do: pack_map(x)
+
+  # helper functions
 
   defp pack_uint(x) when x < @bit_7, do: <<0::1, x::7>>
   defp pack_uint(x) when x < @bit_8, do: <<0xCC, x::8>>
